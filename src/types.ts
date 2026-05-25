@@ -72,4 +72,5 @@ export type ActiveTab =
   | "idiomas" 
   | "metas" 
   | "pdf" 
-  | "admin";
+  | "admin"
+  | "login";

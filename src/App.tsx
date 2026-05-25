@@ -17,6 +17,7 @@ import Translator from "./components/Translator";
 import Metas from "./components/Metas";
 import PDFExporter from "./components/PDFExporter";
 import AdminPanel from "./components/AdminPanel";
+import LoginView from "./components/LoginView";
 import { 
   Home, 
   Droplet, 
@@ -29,7 +30,8 @@ import {
   Download,
   AlertCircle,
   Menu,
-  X
+  X,
+  LogIn
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -62,6 +64,31 @@ export default function App() {
   const [tracking, setTracking] = useState<DailyTracking>(DEFAULT_TRACKING);
   const [translations, setTranslations] = useState<TranslationHistory[]>([]);
   const [showPwaPrompt, setShowPwaPrompt] = useState(false);
+  const [authLoggedIn, setAuthLoggedIn] = useState<boolean>(() => {
+    return localStorage.getItem("next_logged_in") === "true";
+  });
+  const [authUserEmail, setAuthUserEmail] = useState<string>(() => {
+    return localStorage.getItem("next_user_email") || "";
+  });
+
+  const handleAuthLogin = (email: string, name: string) => {
+    setAuthLoggedIn(true);
+    setAuthUserEmail(email);
+    localStorage.setItem("next_logged_in", "true");
+    localStorage.setItem("next_user_email", email);
+
+    // Update name in user profile to the newly registered/logged name
+    const updatedProfile = { ...profile, name };
+    setProfile(updatedProfile);
+    localStorage.setItem("next_profile", JSON.stringify(updatedProfile));
+  };
+
+  const handleAuthLogout = () => {
+    setAuthLoggedIn(false);
+    setAuthUserEmail("");
+    localStorage.setItem("next_logged_in", "false");
+    localStorage.setItem("next_user_email", "");
+  };
 
   // Initialize and load everything from LocalStorage
   useEffect(() => {
@@ -534,6 +561,16 @@ export default function App() {
                 onResetApp={handleResetApp}
               />
             )}
+
+            {activeTab === "login" && (
+              <LoginView
+                isLoggedIn={authLoggedIn}
+                userEmail={authUserEmail}
+                userName={profile.name}
+                onLogin={handleAuthLogin}
+                onLogout={handleAuthLogout}
+              />
+            )}
           </motion.div>
         </AnimatePresence>
       </main>
@@ -601,6 +638,7 @@ export default function App() {
           { tab: "metas", label: "Metas", icon: Target },
           { tab: "pdf", label: "PDF", icon: FileText },
           { tab: "admin", label: "Admin", icon: Settings },
+          { tab: "login", label: "Login", icon: LogIn },
         ].map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.tab;
