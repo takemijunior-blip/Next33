@@ -1,0 +1,6 @@
+{
+  "name": "Next Fitness Tracker",
+  "description": "Acompanhamento fitness completo: monitoramento de treinos, peso, ingestão de água, IMC, diário fotográfico, coach integrado por IA e tradutor multilíngue.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
